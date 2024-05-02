@@ -1,0 +1,173 @@
+openapi: 3.0.3
+info:
+  title: Summer_Workshop
+  description: Summer_Workshop
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8082
+'
+paths:
+  /product:
+    get:
+      summary: "GET all product"
+      operationId: "retreiveAllProduct"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Product"
+
+    delete:
+      summary: "DELETE product"
+      operationId: "deleteProduct"
+      responses:
+        "200":
+          description: "OK"
+
+  /product/{idStock}:
+    post:
+      summary: "POST product and assign to stock"
+      operationId: "addProduct"
+      parameters:
+        - name: "idStock"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Product"
+  /product/{id}:
+    get:
+      summary: "GET product by id"
+      operationId: "retrieveProduct"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Product"
+
+  /productCategoy/{category}:
+    get:
+      summary: "GET productCategoy/{category}"
+      operationId: "retrieveProductByCategory"
+      parameters:
+        - name: "category"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            enum:
+              - "ELECTRONICS"
+              - "CLOTHING"
+              - "BOOKS"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /stock:
+    get:
+      summary: "GET stock"
+      operationId: "retrieveAllStock"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Stock"
+
+    post:
+      summary: "POST stock"
+      operationId: "addStock"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Stock"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Stock"
+
+  /stock/{id}:
+    get:
+      summary: "GET stock/{id}"
+      operationId: "retrieveStock"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Stock"
+components:
+  schemas:
+    Product:
+      type: object
+      $ref:
+      properties:
+        idProduct:
+          type: Long
+        title:
+          type: string
+        price:
+          type: float
+        quantity:
+          type: integer
+
+    Stock:
+      type: object
+      $ref:
+      properties:
+        idStock:
+          type: Long
+        title:
+          type: string
+        quantity:
+          type: integer
+
+

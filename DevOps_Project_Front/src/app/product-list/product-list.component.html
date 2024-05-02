@@ -1,0 +1,23 @@
+<div class="header">
+    <h2>ALL PRODUCTS</h2>
+    <select [(ngModel)]="searchCategory">
+        <option value="">All Categories</option>
+        <option value="ELECTRONICS">ELECTRONICS</option>
+        <option value="CLOTHING">CLOTHING</option>
+        <option value="BOOKS">BOOKS</option>
+    </select>
+</div>
+
+<div class="cards">
+    <ng-container *ngFor="let item of data">
+        <div class="card" *ngIf="!searchCategory || item.category === searchCategory">
+            <div class="card-header" >
+            <h3 class="card-title">{{ item.title }}</h3>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Category: {{ item.category }}</p>
+            <p class="card-info">Quantity: {{ item.quantity }} | Price: {{ item.price }} $</p>
+        </div>
+    </div>
+</ng-container>
+</div>

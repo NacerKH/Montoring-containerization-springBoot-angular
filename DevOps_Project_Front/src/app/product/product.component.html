@@ -1,0 +1,59 @@
+<h2>{{stock.title}} : Product List | {{data.length}} Item(s)</h2>
+<button class="btn btn-round btn-sm btn-success" (click)="open(mymodal)" title="Add Item">+</button>
+<ng-template #mymodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add new Product</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true" (click)="cancel()">×</span>
+        </button>
+
+    </div>    
+    <div class="center">
+        <form class="styled-form">
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" class="form-control" id="productName" placeholder="Product Name" [(ngModel)]="product.title" [ngModelOptions]="{standalone: true}">
+            </div>
+    
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select class="form-control" id="category" [(ngModel)]="product.category" [ngModelOptions]="{standalone: true}" >
+                    <option value="ELECTRONICS">ELECTRONICS</option>
+                    <option value="CLOTHING">CLOTHING</option>
+                    <option value="BOOKS">BOOKS</option>
+                </select>
+            </div>
+    
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" class="form-control" id="price" placeholder="Price" [(ngModel)]="product.price" [ngModelOptions]="{standalone: true}" min="0">
+            </div>
+    
+            <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input type="number" class="form-control" id="quantity" placeholder="Quantity" [(ngModel)]="product.quantity" [ngModelOptions]="{standalone: true}" min="0">
+            </div>
+    
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" (click)="addProduct(product)" (click)="modal.close('Save click')">Add</button>
+                <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Cancel</button>
+            </div>
+        </form>
+    </div>
+    
+
+</ng-template>
+
+<div class="cards">
+    <div class="card" *ngFor="let item of data">
+        <div class="card-header">
+            <h3 class="card-title">{{ item.title }}</h3>
+            <button class="delete-btn" title="Delete Item" (click)="deleteItem(item.idProduct)">X
+            </button>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Category: {{ item.category }}</p>
+            <p class="card-info">Quantity: {{ item.quantity }} | Price: {{ item.price }} $</p>
+        </div>
+    </div>
+</div>

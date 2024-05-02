@@ -1,0 +1,30 @@
+<div class="header">
+  <h2>Stock List </h2>
+  <button (click)="showForm()" button class="btn btn-info">+</button>
+</div>
+<form (ngSubmit)="submitForm()" *ngIf="displayForm">
+  <label for="name">Stock Title:</label>
+  <input [(ngModel)]="stock.title" id="title" name="title" required type="text"><br><br>
+  <button (click)="addStock(stock)" button class="btn btn-info" type="submit" value="Submit">submit</button>
+  <button (click)="submitForm()" button class="btn btn-danger">cancel</button>
+  <br><br>
+</form>
+<div class="row">
+  <div class="card" class="text-center">
+    <table class="table">
+      <thead style="background-color: rgb(192, 183, 183);">
+      <th>Stock title</th>
+      <th>Action</th>
+      </thead>
+      <tbody>
+      <!-- Add your table rows here -->
+      <tr *ngFor="let item of data">
+        <td>{{ item.title }}</td>
+        <td>
+          <button [routerLink]="['/product', item.idStock]" class="btn btn-primary">Details</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
