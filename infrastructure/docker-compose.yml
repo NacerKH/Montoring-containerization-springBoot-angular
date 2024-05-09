@@ -1,0 +1,54 @@
+version : '3.9'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    restart: always
+    privileged: true
+    working_dir: /var/jenkins_home
+    # command: bash -c "chown -R 1000:1000 /var/jenkins_home && /usr/local/bin/jenkins.sh"
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+    
+    networks:
+      - backend-network
+   
+    
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    user : "472"
+    privileged: true
+    ports:
+      - "3000:3000"
+      - "9090:9090"
+    volumes:
+      - ./grafana:/var/lib/grafana
+    
+    networks:
+      - backend-network
+  
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: always
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - ./prometheus/data:/prometheus
+    networks:
+      - backend-network
+    
+  
+networks:
+  backend-network:   
+   driver: bridge
+     
+    
+
