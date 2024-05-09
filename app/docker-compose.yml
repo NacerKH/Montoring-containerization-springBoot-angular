@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  db:
+    image: mysql:latest
+    container_name: db
+    restart : always
+    ports:
+      - "33060:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: db
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    depends_on:
+      - db
+    build: ./backend
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:33060/db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: my-secret-pw
+    ports:
+      - 8090:8090
+
+  frontend:
+    depends_on:
+      - db
+    build: ./frontend
+    ports:
+      - 4200:80
