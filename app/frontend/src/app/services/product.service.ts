@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = 'http://localhost:8082'; 
+  private apiUrl = 'http://localhost:8090';
 
   constructor(private http: HttpClient) { }
 
@@ -14,7 +14,7 @@ export class ProductService {
 
        return this.http.get(`${this.apiUrl}/product`);
   }
-  
+
   public fetchData(id : any): Observable<any> {
 
     return this.http.get(`${this.apiUrl}/product/stock/${id}`);
@@ -26,7 +26,7 @@ export class ProductService {
   }
 
   public addProduct(product: any, idStock : any): Observable<any> {
-    
+
     return this.http.post(`${this.apiUrl}/product/${idStock}`, product);
   }
 
