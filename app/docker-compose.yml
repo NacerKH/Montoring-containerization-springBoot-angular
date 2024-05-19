@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   db:
-    image: mysql:latest
+    image: mysql:5.7
     container_name: db
     restart : always
     ports:
@@ -10,23 +10,58 @@ services:
       MYSQL_ROOT_PASSWORD: my-secret-pw
       MYSQL_DATABASE: db
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql 
+    networks:
+      - backend-network
+    
+  
+  mysql-exporter:
+  
+    image: prom/mysqld-exporter
+    container_name: mysql-exporter
+    command: 
+    - "--config.my-cnf=/mysql_exporter/.my.cnf"
+    - "--mysqld.address=db:3306"
+    - "--web.listen-address=0.0.0.0:9104"
+    - "--web.telemetry-path=/metrics"
+    - "--mysqld.username=root"
+    - "--log.level=info"
 
+     
+    restart: unless-stopped
+    ports:
+      - "9104:9104"
+    environment:
+      - DATA_SOURCE_NAME=root:my-secret-pw@db:33060/db
+      - MYSQLD_EXPORTER_USERNAME=root
+      - MYSQLD_EXPORTER_PASSWORD=my-secret-pw
+      
+      
+    networks:
+      - backend-network     
+     
   backend:
     depends_on:
       - db
     build: ./backend
     restart: always
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:33060/db
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: my-secret-pw
     ports:
       - 8090:8090
+    networks:
+      - backend-network
 
   frontend:
     depends_on:
       - db
     build: ./frontend
     ports:
-      - 4200:80
+      - 8082:80
+networks:
+  backend-network:
+    external: true
+volumes:
+  db_data:  # Define the named volume here
