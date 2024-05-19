@@ -1,54 +1,78 @@
-version : '3.9'
+version: '3.9'
 services:
   jenkins:
     image: jenkins/jenkins:lts
     container_name: jenkins
     restart: always
-    privileged: true
     working_dir: /var/jenkins_home
-    # command: bash -c "chown -R 1000:1000 /var/jenkins_home && /usr/local/bin/jenkins.sh"
     ports:
       - "8080:8080"
       - "50000:50000"
     volumes:
-      - ./jenkins_home:/var/jenkins_home
-    
+      - jenkins_home:/var/jenkins_home
     networks:
       - backend-network
-   
-    
+
   grafana:
     image: grafana/grafana
     container_name: grafana
     restart: always
-    user : "472"
-    privileged: true
     ports:
       - "3000:3000"
-      - "9090:9090"
     volumes:
-      - ./grafana:/var/lib/grafana
-    
+      - grafana_data:/var/lib/grafana
     networks:
       - backend-network
-  
 
   prometheus:
     image: prom/prometheus
     container_name: prometheus
     restart: always
     ports:
-      - "8090:8090"
+      - "9090:9090"
     volumes:
-      - ./prometheus:/etc/prometheus
-      - ./prometheus/data:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - backend-network
-    
-  
-networks:
-  backend-network:   
-   driver: bridge
-     
-    
+    depends_on:
+      - sonarqube
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
 
+  node_exporter:
+    image: prom/node-exporter
+    container_name: node_exporter
+    restart: always
+    ports:
+      - "9100:9100"
+    networks:
+      - backend-network
+
+  sonarqube:
+    image: sonarqube:9.9.5-community
+    container_name: sonarqube
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9092:9092"
+      - "9093:9093"
+    volumes:
+      - sonarqube_data:/opt/sonarqube
+    networks:
+      - backend-network
+networks:
+  backend-network:
+    external: true
+
+
+volumes:
+  jenkins_home:
+  grafana_data:
+  prometheus_config:
+  prometheus_data:
+  sonarqube_data:
