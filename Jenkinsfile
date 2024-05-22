@@ -8,7 +8,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
         SONARQUBE_ENV = 'SonarQube'
         SONARQUBE_PROJECT_KEY = 'NacerKH_Montoring-containerization-springBoot-angular_AY-Xciv7g-qPkHtLhErl'
-        NEXUS_URL = 'http://localhost:8081/repository/maven-releases/'
+        NEXUS_URL = 'http://192.168.176.7:8081/repository/maven-releases/'
         NEXUS_CREDENTIALS_ID = 'nexus-credentials'
         MAVEN_TOOL = 'mvn' // Maven tool name in Jenkins
         registryCredential = 'dockerhub'
@@ -88,7 +88,22 @@ dockerImage.push()
             }
         }
 
-    
+      stage('Upload to Nexus') {
+            steps {
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: '192.168.176.7:8081',
+                    groupId: 'tn.esprit',
+                    version: '1.0.0',
+                    repository: 'maven-releases',
+                    credentialsId: NEXUS_CREDENTIALS_ID,
+                    artifacts: [
+                        [artifactId: 'DevOps_Project', classifier: '', file: 'app/backend/target/DevOps_Project-1.0.jar', type: 'jar']
+                    ]
+                )
+            }
+        }
     }
 
     post {
