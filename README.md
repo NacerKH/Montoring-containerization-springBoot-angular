@@ -1,4 +1,3 @@
-
 # Dockerization of Spring Boot and Angular Project 🐳
 
 This repository contains a Dockerized setup for a Spring Boot backend and Angular frontend project.
@@ -12,7 +11,7 @@ The application consists of two main folders:
 
 ## Infrastructure Setup 🛠️
 
-The `infrastructure` folder contains Docker Compose file with services like Jenkins, Grafana, and Prometheus.
+The `infrastructure` folder contains Docker Compose file with services like Jenkins, Grafana, Prometheus, Nexus, Node Exporter, MySQL Exporter, Promtail, Loki, SonarQube, Ansible, and n8n.
 
 ### Jenkins 🛠️
 
@@ -54,6 +53,71 @@ The `infrastructure` folder contains Docker Compose file with services like Jenk
 - **Notes:**
   - Prometheus is accessible at [http://localhost:8090](http://localhost:8090)
 
+### Nexus 🛠️
+
+- **Image:** sonatype/nexus3
+- **Container Name:** nexus
+- **Ports:**
+  - 8081: Nexus UI
+- **Volumes:**
+  - ./nexus-data:/nexus-data
+- **Networks:** backend-network
+- **Notes:**
+  - Nexus is accessible at [http://localhost:8081](http://localhost:8081)
+
+### Node Exporter 📊
+
+- **Image:** prom/node-exporter
+- **Container Name:** node-exporter
+- **Ports:**
+  - 9100: Node Exporter port
+- **Networks:** backend-network
+
+### MySQL Exporter 📈
+
+- **Image:** prom/mysqld-exporter
+- **Container Name:** mysql-exporter
+- **Ports:**
+  - 9104: MySQL Exporter port
+- **Environment Variables:**
+  - DATA_SOURCE_NAME: "user:password@(host:port)/"
+- **Networks:** backend-network
+
+### Promtail 📋
+
+- **Image:** grafana/promtail
+- **Container Name:** promtail
+- **Ports:**
+  - 9080: HTTP port
+  - 9095: gRPC port
+- **Volumes:**
+  - ./promtail:/etc/promtail
+  - /var/log:/var/log
+- **Networks:** backend-network
+
+### Loki 📋
+
+- **Image:** grafana/loki
+- **Container Name:** loki
+- **Ports:**
+  - 3100: HTTP port
+  - 9095: gRPC port
+- **Volumes:**
+  - ./loki:/etc/loki
+- **Networks:** backend-network
+
+### SonarQube 🛠️
+
+- **Image:** sonarqube
+- **Container Name:** sonarqube
+- **Ports:**
+  - 9000: SonarQube UI
+- **Networks:** backend-network
+- **Notes:**
+  - SonarQube is accessible at [http://localhost:9000](http://localhost:9000)
+
+
+
 ## Usage 🚀
 
 1. **Application Setup**:
@@ -76,8 +140,26 @@ The `infrastructure` folder contains Docker Compose file with services like Jenk
    - Grafana: [http://localhost:3000](http://localhost:3000)
    - Prometheus: [http://localhost:8090](http://localhost:8090)
    - Jenkins: [http://localhost:8080](http://localhost:8080)
+   - Nexus: [http://localhost:8081](http://localhost:8081)
+   - SonarQube: [http://localhost:9000](http://localhost:9000)
+
+
+ ## TODO 📝
+
+### Ansible
+
+- Implement Ansible on the pipeline to automate tasks such as backup and deployment.
+- Configure Ansible playbooks according to your requirements.
+- Ensure proper integration with the existing Dockerized setup.
+
+### n8n
+
+- Set up n8n to automate workflows and tasks related to the project.
+- Define workflows in n8n to streamline processes such as data synchronization, notifications, and integrations.
+- Integrate n8n with other services in the Dockerized infrastructure.  
 
 ## Notes 📝
 
 - Ensure Docker is installed and running on your system.
 - Modify Dockerfiles and configuration files according to your project requirements.
+- Configure Ansible and n8n according to your automation and workflow needs.
