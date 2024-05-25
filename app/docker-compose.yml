@@ -35,8 +35,6 @@ services:
       - DATA_SOURCE_NAME=root:my-secret-pw@db:33060/db
       - MYSQLD_EXPORTER_USERNAME=root
       - MYSQLD_EXPORTER_PASSWORD=my-secret-pw
-      
-      
     networks:
       - backend-network     
      
@@ -49,6 +47,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: my-secret-pw
+    volumes:
+       - springBootLogs:/var/log/spring-boot
     ports:
       - 8090:8090
     networks:
@@ -65,3 +65,4 @@ networks:
     external: true
 volumes:
   db_data:  # Define the named volume here
+  springBootLogs:

@@ -1,0 +1,16 @@
+<configuration>
+    <property name="LOG_PATH" value="/var/log/spring-boot" />
+    <property name="LOG_FILE" value="${LOG_PATH}/application.log" />
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_FILE}</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
