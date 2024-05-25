@@ -76,11 +76,37 @@ services:
       - nexus-data:/nexus-data:rw
     networks:
       - backend-network 
-     
+  loki:
+   image: grafana/loki:2.8.2
+   container_name: loki
+   ports:
+    - "3100:3100"
+   command: -config.file=/etc/loki/local-config.yaml
+   volumes:
+    
+      - loki-data:/loki 
+   networks:
+      - backend-network
+
+  promtail:
+    image: grafana/promtail:2.8.2
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log
+      - ./loki/promtail/promtail-config.yaml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    restart: always
+    ports:
+      - "9080:9080"
+  
+    networks:
+      - backend-network 
+    
+  
 networks:
   backend-network:
     external: true
-
+   
 
 volumes:
   jenkins_home:
@@ -89,3 +115,4 @@ volumes:
   prometheus_data:
   sonarqube_data:
   nexus-data:
+  loki-data:  
